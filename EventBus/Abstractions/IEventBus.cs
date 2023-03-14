@@ -12,6 +12,8 @@ namespace TestRabbitMQ.EventBus.Abstractions
         void Subscribe<T, TH>()
             where T : IntegrationEvent
             where TH : IIntergrationEventHandler<T>;
+        void SubscribeDynamic<TH>(string eventName)
+        where TH : IDynamicIntegrationEventHandler;
         void UnsubscribeDynamic<TH>(string eventName)
         where TH : IDynamicIntegrationEventHandler;
 

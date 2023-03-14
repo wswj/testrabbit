@@ -138,19 +138,42 @@ namespace TestRabbitMQ.EventBusRabbitMQ
             where T : IntegrationEvent
             where TH : IIntergrationEventHandler<T>
         {
-            throw new NotImplementedException();
+            var eventName = _subsManager.GetEventKey<T>();
+            DoInternalSubscription(eventName);
+            _subsManager.AddSubscription<T,TH>();
+            StartBasicConsume();
+        }
+
+        private void DoInternalSubscription(string eventName) {
+            var containsKey = _subsManager.HasSubscriptionsForEvent(eventName);
+            if (!containsKey) {
+                if (!_persistentConnection.IsConnected) {
+                    _persistentConnection.TryConnect();
+                }
+                _consumerChannel.QueueBind(queue:_queueName,
+                    exchange:BROKER_NAME,
+                    routingKey:eventName);
+            }
         }
 
         public void UnsubscribeDynamic<TH>(string eventName) where TH : IDynamicIntegrationEventHandler
         {
-            throw new NotImplementedException();
+            _subsManager.RemoveDynamicSubscription<TH>(eventName);
         }
 
         public void Unsubscribe<T, TH>()
             where T : IntegrationEvent
             where TH : IIntergrationEventHandler<T>
         {
-            throw new NotImplementedException();
+            var eventName = _subsManager.GetEventKey<T>();
+            _subsManager.RemoveSubscription<T,TH>();
+        }
+
+        public void SubscribeDynamic<TH>(string eventName) where TH : IDynamicIntegrationEventHandler
+        {
+            DoInternalSubscription(eventName);
+            _subsManager.AddDynamicSubscription<TH>(eventName);
+            StartBasicConsume();
         }
     }
 }
