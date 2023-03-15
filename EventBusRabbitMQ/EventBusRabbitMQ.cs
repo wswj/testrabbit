@@ -31,7 +31,12 @@ namespace TestRabbitMQ.EventBusRabbitMQ
         private string _queueName;
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (_consumerChannel != null)
+            {
+                _consumerChannel.Dispose();
+            }
+
+            _subsManager.Clear();
         }
         public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, IEventBusSubscriptionsManager subscriptionsManager, string queueName = null, int retryCount = 5, IServiceScopeFactory serviceScopeFactory = null)
         {
@@ -41,7 +46,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
             _consumerChannel = CreateConsumerChannel();
             this.serviceScopeFactory = serviceScopeFactory;
         }
-        private IModel CreateConsumerChannel() {
+        private IModel CreateConsumerChannel() { 
             if (!_persistentConnection.IsConnected) {
                 _persistentConnection.TryConnect();
             }
@@ -101,7 +106,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
                         if (handler == null) continue;
                         var eventType = _subsManager.GetEventTypeByName(eventName);
                         var integrationEvent = JsonSerializer.Deserialize(message,eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-                        var concreteType = typeof(IIntergrationEventHandler<>).MakeGenericType(eventType);
+                        var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
                         await Task.Yield();
                         await (Task)concreteType.GetMethod("handle").Invoke(handler, new object[] { integrationEvent });
                     }
@@ -136,7 +141,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
 
         public void Subscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntergrationEventHandler<T>
+            where TH : IIntegrationEventHandler<T>
         {
             var eventName = _subsManager.GetEventKey<T>();
             DoInternalSubscription(eventName);
@@ -163,7 +168,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
 
         public void Unsubscribe<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntergrationEventHandler<T>
+            where TH : IIntegrationEventHandler<T>
         {
             var eventName = _subsManager.GetEventKey<T>();
             _subsManager.RemoveSubscription<T,TH>();

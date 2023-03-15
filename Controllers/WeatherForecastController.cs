@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestRabbitMQ.EventBus.Abstractions;
+using TestRabbitMQ.Events;
 
 namespace TestRabbitMQ.Controllers
 {
@@ -11,6 +13,7 @@ namespace TestRabbitMQ.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly IEventBus eventBus;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -18,22 +21,19 @@ namespace TestRabbitMQ.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IEventBus eventBus)
         {
             _logger = logger;
+            this.eventBus = eventBus;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            TestEvents testEvents = new TestEvents("消息");
+            
+            eventBus.Publish(testEvents);
+            return null;
         }
     }
 }

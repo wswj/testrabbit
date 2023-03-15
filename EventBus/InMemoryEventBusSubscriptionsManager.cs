@@ -27,7 +27,7 @@ namespace TestRabbitMQ.EventBus
 
         public void AddSubscription<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntergrationEventHandler<T>
+            where TH : IIntegrationEventHandler<T>
         {
             var eventName = GetEventKey<T>();
             DoAddSubscription(typeof(TH), eventName, false);
@@ -120,7 +120,7 @@ namespace TestRabbitMQ.EventBus
 
         public void RemoveSubscription<T, TH>()
             where T : IntegrationEvent
-            where TH : IIntergrationEventHandler<T>
+            where TH : IIntegrationEventHandler<T>
         {
             var eventName = GetEventKey<T>();
             var handleToRemove= DoFindSubscriptionToRemove(eventName,typeof(TH));

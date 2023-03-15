@@ -12,9 +12,9 @@ namespace TestRabbitMQ.EventBus
         bool IsEmpty { get; }
         event EventHandler<string> OnEventRemoved;
         void AddDynamicSubscription<TH>(string eventName) where TH : IDynamicIntegrationEventHandler;
-        void AddSubscription<T, TH>() where T : IntegrationEvent where TH : IIntergrationEventHandler<T>;
+        void AddSubscription<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>;
         void RemoveSubscription<T, TH>()
-            where TH : IIntergrationEventHandler<T>
+            where TH : IIntegrationEventHandler<T>
             where T : IntegrationEvent;
         void RemoveDynamicSubscription<TH>(string eventName)
             where TH : IDynamicIntegrationEventHandler;

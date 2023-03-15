@@ -9,7 +9,7 @@ namespace TestRabbitMQ.EventBus.Abstractions
     public interface IIntegrationEventHandler
     {
     }
-    public interface IIntergrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler where TIntegrationEvent : IntegrationEvent 
+    public interface IIntegrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler where TIntegrationEvent : IntegrationEvent 
     {
         Task Handle(TIntegrationEvent @event);
     }

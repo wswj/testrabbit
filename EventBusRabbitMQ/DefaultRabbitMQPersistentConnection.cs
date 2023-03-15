@@ -25,7 +25,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             _retryCount = retryCount;
         }
-        public bool IsConnected => _connection.IsOpen&&!Disposed;
+        public bool IsConnected => _connection!=null&&_connection.IsOpen && !Disposed;
 
         public IModel CreateModel()
         {

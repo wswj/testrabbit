@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestRabbitMQ.EventBusRabbitMQ;
 
 namespace TestRabbitMQ
 {
@@ -31,6 +32,9 @@ namespace TestRabbitMQ
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TestRabbitMQ", Version = "v1" });
             });
+            ;
+            services.AddIntegrationServices(Configuration);
+            services.AddEventBus(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +55,7 @@ namespace TestRabbitMQ
             {
                 endpoints.MapControllers();
             });
+            app.ConfigureEventBus();
         }
     }
 }
