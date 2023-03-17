@@ -86,6 +86,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
             catch (Exception ex) {
                 
             }
+            _consumerChannel.BasicAck(eventArgs.DeliveryTag,false);
         }
 
         private async Task ProcessEvent(string eventName,string message) {
@@ -108,7 +109,7 @@ namespace TestRabbitMQ.EventBusRabbitMQ
                         var integrationEvent = JsonSerializer.Deserialize(message,eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
                         await Task.Yield();
-                        await (Task)concreteType.GetMethod("handle").Invoke(handler, new object[] { integrationEvent });
+                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
                     }
                 }
             }

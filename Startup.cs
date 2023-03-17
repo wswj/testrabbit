@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestRabbitMQ.EventBusRabbitMQ;
+using TestRabbitMQ.MIddleWare;
 
 namespace TestRabbitMQ
 {
@@ -35,6 +36,7 @@ namespace TestRabbitMQ
             ;
             services.AddIntegrationServices(Configuration);
             services.AddEventBus(Configuration);
+            services.AddSingleton(new RateLimitMiddleWare(1,TimeSpan.FromSeconds(2)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +48,7 @@ namespace TestRabbitMQ
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TestRabbitMQ v1"));
             }
-
+            app.UseMiddleware<RateLimitMiddleWare>();
             app.UseRouting();
 
             app.UseAuthorization();

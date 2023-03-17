@@ -31,8 +31,11 @@ namespace TestRabbitMQ.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             TestEvents testEvents = new TestEvents("消息");
-            
-            eventBus.Publish(testEvents);
+
+            for (int i = 0; i < 10000; i++)
+            {
+                eventBus.Publish(testEvents);
+            }
             return null;
         }
     }

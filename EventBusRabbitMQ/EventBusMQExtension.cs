@@ -54,9 +54,10 @@ namespace TestRabbitMQ.EventBusRabbitMQ
                 {
                     retryCount = int.Parse(configuration["EventBusRetryCount"]);
                 }
-                return new EventBusRabbitMQ(rabbitMQPersistentConnection, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
+                return new EventBusRabbitMQ(rabbitMQPersistentConnection, eventBusSubcriptionsManager, subscriptionClientName, retryCount,service.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>());
             });
             service.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+            service.AddTransient<TestEventHandler>();
             return service;
         }
         public static void ConfigureEventBus(this IApplicationBuilder app)
